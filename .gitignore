@@ -2,6 +2,7 @@
 test/
 bkp/
 test/
+out/
 # macOS Specific
 .DS_Store
 .AppleDouble

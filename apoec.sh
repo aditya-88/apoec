@@ -4,6 +4,8 @@
 # This script does the following:
 # A. Find all VCF files in the given directory
 # B. For each VCF file, extract CHR-POS-REF-ALT and save as a TSV file
+# C. Perform the genotyping
+# D. Compile a report of all samples in a single file
 
 # This script requires the following software:
 # bcftools

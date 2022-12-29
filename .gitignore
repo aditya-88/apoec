@@ -1,0 +1,8 @@
+# Folders
+test/
+bkp/
+test/
+# macOS Specific
+.DS_Store
+.AppleDouble
+.LSOverride

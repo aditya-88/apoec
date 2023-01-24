@@ -9,7 +9,12 @@
 
 # This script requires the following software:
 # bcftools
-
+# Exit on error from any part of the script
+set -eE
+# Exit the entire script if any command in a pipe fails
+set -o pipefail
+# Exit the entire script if ctrl-c is pressed
+trap "exit" INT
 # Variables
 # The directory where the VCF files are located
 VCF_DIR=$1
@@ -83,12 +88,15 @@ else
 fi
 
 # A. Find all VCF or vcf.gz files in the given directory
+echo "Finding all VCF/VCF.gz files in the input directory..."
 if [ -z $VCF_REGEX ]
 then
     VCF_FILES=$(find $VCF_DIR -type f -name "*.vcf" -o -name "*.vcf.gz")
 else
     VCF_FILES=$(find $VCF_DIR -type f -name "*.vcf" -o -name "*.vcf.gz" | grep -E $VCF_REGEX)
 fi
+# Print the number of files found
+echo "Found $(echo $VCF_FILES | wc -w) VCF files."
 
 # Check if any VCF files were found
 if [ -z "$VCF_FILES" ]
@@ -128,6 +136,10 @@ do
         gunzip -c $VCF_FILE > $TSV_DIR/$FILE_NAME_NO_EXT
         VCF_FILE=$TSV_DIR/$FILE_NAME_NO_EXT
     fi
+    #Subset the input VCF file to only include the chromosome 19
+    echo "Subsetting $FILE_NAME_NO_EXT to only include chromosome 19..."
+    grep '^#\|^19\|^chr19' $VCF_FILE > $TSV_DIR/$FILE_NAME_NO_EXT.chr19.vcf
+    VCF_FILE=$TSV_DIR/$FILE_NAME_NO_EXT.chr19.vcf
     # Remove "chr" from the chromosome names
     # Check if mawk is installed, if so use it otherwise, use awk
     echo "Removing \"chr\" from the chromosome names..."
@@ -146,13 +158,9 @@ do
         continue
     fi
     # Replace the original VCF file with the one without "chr"
+    rm "$VCF_FILE"
     VCF_FILE="$TSV_DIR/$FILE_NAME_NO_EXT.no_chr"
-
-    # Subset the input VCF file to only include the chromosome 19
-    grep '^#\|^19' $VCF_FILE > $TSV_DIR/$FILE_NAME_NO_EXT.chr19.vcf
-    VCF_FILE=$TSV_DIR/$FILE_NAME_NO_EXT.chr19.vcf
     # Check if output file is empty
-    
     if [ ! -s $VCF_FILE ]
     then
         echo "ERROR: $VCF_FILE is empty. No chromosome 19 was found in the input VCF file."

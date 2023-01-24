@@ -239,7 +239,6 @@ do
     rm $TSV_DIR/$FILE_NAME_NO_EXT.split
     rm $TSV_FILE
     rm $TSV_DIR/$FILE_NAME_NO_EXT.APOE
-    rm $TSV_DIR/$FILE_NAME_NO_EXT.no_chr
     rm $TSV_DIR/$FILE_NAME_NO_EXT.APOE_renamed
     # Check if VCF file in the TSV_DIR, if so, delete it
     if [ -f $TSV_DIR/$FILE_NAME_NO_EXT ]

@@ -145,6 +145,7 @@ do
     echo "Removing \"chr\" from the chromosome names..."
     if command -v mawk &> /dev/null
     then
+        echo "Using mawk..."
         mawk '$0 == "^#" gsub("chr","") {print $0}; $0 == "^chr" {gsub(/^chr/, "")}{print $0}' "$VCF_FILE" > $TSV_DIR/$FILE_NAME_NO_EXT.no_chr
     else
         echo "Using awk..."
@@ -170,13 +171,6 @@ do
     bcftools norm --threads "$(nproc)" -m - $VCF_FILE > $TSV_DIR/$FILE_NAME_NO_EXT.split
     # Extract CHR-POS-REF-ALT- and save as a TSV file
     bcftools query -f '%CHROM-%POS-%REF-%ALT-[%GT]\n' $TSV_DIR/$FILE_NAME_NO_EXT.split > $TSV_FILE
-    # Check if output file is empty
-    if [ ! -s $TSV_FILE ]
-    then
-        echo "ERROR: $TSV_FILE is empty. Skipping..."
-        continue
-    fi
-    # Check which APOE genotypes are present
     if grep -q $rs7412 $TSV_FILE
     then
         grep $rs7412 $TSV_FILE > $TSV_DIR/$FILE_NAME_NO_EXT.APOE

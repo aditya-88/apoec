@@ -107,12 +107,6 @@ fi
 # B. For each VCF file, extract CHR-POS-REF-ALT and save as a TSV file
 for VCF_FILE in $VCF_FILES
 do
-    # Skip the file if it is empty and notify the user
-    if [ ! -s $VCF_FILE ]
-    then
-        echo "WARNING: $VCF_FILE is empty. Skipping..."
-        continue
-    fi
     # Setup original file name
     VCF_FILE_ORIG=$VCF_FILE
     # Get the file name
@@ -124,6 +118,13 @@ do
     if [[ " ${APOE_GENOTYPE_ARRAY[@]} " =~ " $FILE_NAME_NO_EXT " ]]
     then
         echo "WARNING: $FILE_NAME_NO_EXT has already been processed. Skipping..."
+        continue
+    fi
+    # Mark the file as APOE-3/3 if it is empty as it has no variants
+    if [ ! -s $VCF_FILE ]
+    then
+        echo "WARNING: $VCF_FILE is empty. Marking it APOE-3/3"
+        echo -e "$FILE_NAME_NO_EXT\tAPOE-3/3" >> $TSV_DIR/APOE_genotype_report.tsv
         continue
     fi
 

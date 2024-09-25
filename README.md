@@ -1,5 +1,7 @@
 # APOE Genotype Coding #
 
+[![DOI](https://zenodo.org/badge/583294262.svg)](https://zenodo.org/doi/10.5281/zenodo.13837763)
+
 ## Introduction ##
 
 This small piece of nifty script takes in a folder of VCF/ VCF.gz files and genotypes APOE. In the end, we have a single report file with the name of sample and the genotype.
